@@ -123,11 +123,6 @@ public class QuizConsole {
         starNum = 0;
     }
 
-
-    public void accessQuiz() {
-
-    }
-
     public void displayMenu() {
         boolean keepDisplay = true;
         while (keepDisplay) {
