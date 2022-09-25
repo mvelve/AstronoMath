@@ -399,6 +399,3 @@ public class QuizConsole {
     }
 
 }
-
-
-
