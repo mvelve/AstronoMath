@@ -31,6 +31,7 @@ public class Quiz {
                 return feedback5;
             default: throw new NoSuchElementException(); // runtime exception
         }
+        return retArray;
     }
 
 
