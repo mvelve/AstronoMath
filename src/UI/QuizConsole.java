@@ -3,29 +3,148 @@ package UI;
 import Model.Question;
 import Model.Quiz;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class QuizConsole {
     private final Scanner input = new Scanner(System.in);
     private Quiz quiz;
+    private static final String DESTINATION = "./data/constellations.json";
+    private JsonReader reader = new JsonReader(DESTINATION);
+    private JsonWriter writer = new JsonWriter(DESTINATION);
+
+
+    private final String Aries = "                                        \n" +
+            "Aries                                   \n" +
+            "                                        \n" +
+            "                                        \n" +
+            "..   .'.......................;,.       \n" +
+            "...  .,'...................   .,.       \n" +
+            "..                             .'.      \n" +
+            "                                .'.     \n" +
+            "                                .'.     \n" +
+            "                                 .'.    \n" +
+            "                                  .'    \n" +
+            "                                  .'.   \n" +
+            "                                   .'.  \n" +
+            "                                    ';. \n" +
+            "                                   .,;. \n" +
+            "                                  ....  \n" +
+            "                                 .'.    \n" +
+            "                                .,;.    \n" +
+            "                              .';.      \n" +
+            "                            .,,.        \n" +
+            "                            .'.         \n" +
+            "                                        \n" +
+            "                                        \n";
+
+    private final String ursaMajor = "                                        \n" +
+            "Ursa Major                              \n" +
+            "                                        \n" +
+            "    . .. . .                            \n" +
+            "            ..                          \n" +
+            "              . .                       \n" +
+            "                 ....                   \n" +
+            "                     ...                \n" +
+            "                     .. ..  .           \n" +
+            "                     .        ..  .     \n" +
+            "                   .'.           .      \n" +
+            "                    .. .      ..        \n" +
+            "                        . .  ..         \n" +
+            "                                        \n" +
+            "                                        \n" +
+            "                                        \n";
+    private final String ursaMinor =
+            "Ursa Minor                              \n" +
+                    "                                        \n" +
+                    "                                        \n" +
+                    "                                        \n" +
+                    "                                        \n" +
+                    "        ... ..  ...                     \n" +
+                    "       .         ..                     \n" +
+                    "     ..          ..                     \n" +
+                    "     .. . .. . . ...                    \n" +
+                    "                    . ...               \n" +
+                    "                          ...  ..       \n" +
+                    "                                  .     \n" +
+                    "                                        \n" +
+                    "                                        \n" +
+                    "                                        \n";
+    private final String cassiopeia =
+            "Cassiopeia                              \n" +
+                    "                                        \n" +
+                    "                                        \n" +
+                    "     .                                  \n" +
+                    "      .                                 \n" +
+                    "       .           ..                   \n" +
+                    "        .    . . .. ,.                  \n" +
+                    "         . ..         .         ..      \n" +
+                    "         ..            .       ..       \n" +
+                    "                        .    ..         \n" +
+                    "                        .  .            \n" +
+                    "                        ...             \n" +
+                    "                        ..              \n" +
+                    "                                        \n" +
+                    "                                        \n" +
+                    "                                        \n" +
+                    "                                        \n";
+    private final String aquila = "                                        \n" +
+            "Aquila                                  \n" +
+            "                                        \n" +
+            "                                        \n" +
+            "                              ..        \n" +
+            "                              ..        \n" +
+            "           . ..              .  .       \n" +
+            "          ..    .           .   .       \n" +
+            "         .       .          .   .       \n" +
+            "                  ..       .    .       \n" +
+            "                     .   ..     .       \n" +
+            "                   .  . ..      .       \n" +
+            "              . ..               .      \n" +
+            "         . .                     .      \n" +
+            "      . ...  ... .. .    .. .  ....     \n" +
+            "                                ...     \n" +
+            "                                        \n" +
+            "                                        \n" +
+            "                                        \n" +
+            "                                        \n";
+
+
+    private ArrayList<String> constellations = new ArrayList<>(Arrays.asList(Aries, ursaMajor, ursaMinor, cassiopeia, aquila));
+    private ArrayList<String> unlockedConstellations = new ArrayList<>();
+
 
     public QuizConsole() {
         quiz = new Quiz();
         displayMenu();
+        starNum = 0;
+    }
+
+
+    public void accessQuiz() {
+
     }
 
     public void displayMenu() {
         boolean keepDisplay = true;
         while (keepDisplay) {
             System.out.println("Option 1: Press t to take your quiz");
-            System.out.println("Option 2: Press q to quit your program");
+            System.out.println("Option 2: Press s to save your progress");
+            System.out.println("Option 3: Press l to load your progress");
+            System.out.println("Option 4: Press q to quit your program");
             switch (input.nextLine()) {
                 case "t":
                     createQuiz();
                     initiateQuiz();
                     seeQuiz();
                     keepDisplay = false;
+                    break;
+                case "l" : loadConstellation();
+                    break;
+                case "s" : saveConstellation();
                     break;
                 case "q":
                     keepDisplay = false;
@@ -114,7 +233,7 @@ public class QuizConsole {
         quiz.addQuestion(new Question("___ - 0.7 = 6.7",
                 'A', 4, 7.4, 7.1, 7.9, 7.2));
         quiz.addQuestion(new Question("8.1 - ___ = 2.4?", 'D', 4, 5.6, 5.8, 5.9, 5.7));
-        quiz.addQuestion(new Question("12 * 0.4 = ___", 'B', 4, 4.5, 4.8,3.3, 4.9));
+        quiz.addQuestion(new Question("12 * 0.4 = ___", 'B', 4, 4.5, 4.8, 3.3, 4.9));
 
 
         quiz.addQuestion(new Question("94/100 = ___", 'D', 5, 0.93, 0.095, 0.93, 0.94));
@@ -138,19 +257,24 @@ public class QuizConsole {
             String level = input.nextLine();
 
             switch (level) {
-                case "1": showQuestion(1);
-                keepDisplay = false;
-                    break;
-                case "2": showQuestion(2);
+                case "1":
+                    showQuestion(1);
                     keepDisplay = false;
                     break;
-                case "3": showQuestion(3);
+                case "2":
+                    showQuestion(2);
                     keepDisplay = false;
                     break;
-                case "4": showQuestion(4);
+                case "3":
+                    showQuestion(3);
                     keepDisplay = false;
                     break;
-                case "5": showQuestion(5);
+                case "4":
+                    showQuestion(4);
+                    keepDisplay = false;
+                    break;
+                case "5":
+                    showQuestion(5);
                     keepDisplay = false;
                 default:
                     System.out.println("Please choose a valid option!\nt");
@@ -159,6 +283,7 @@ public class QuizConsole {
 
 
     }
+
     public void showQuestion(int level) {
         for (Question q : quiz.getQuestions().get(level)) {
             System.out.println(q.getDescription());
@@ -170,26 +295,69 @@ public class QuizConsole {
         }
     }
 
+    public void displayEndingMenu() {
+        boolean keepDisplay = true;
+        while (keepDisplay) {
+            System.out.println("Look up at the stars! You've unlocked a new constellation:");
+            int randomConstellationNum = 1 + (int) (6 * Math.random()) / 2;
+            String chosenConstellation = constellations.get(randomConstellationNum);
+            if (starNum >= 5) {
+                System.out.println(chosenConstellation);
+                if (!unlockedConstellations.contains(chosenConstellation)) {
+                    unlockedConstellations.add(chosenConstellation);
+                }
+            }
+
+            System.out.println("Select from the following");
+            System.out.println("b -> back to main menu");
+            System.out.println("v -> view collection of constellations");
+
+            String userinput = input.nextLine();
+
+            switch (userinput) {
+                case "b":
+                    displayMenu(); // back to main menu
+                    keepDisplay = false;
+                    break;
+                case "v":
+                    viewConstellations();
+                    keepDisplay = false;
+                    break;
+                default:
+                    System.out.println("Please choose a valid option!\nt");
+
+                    keepDisplay = false;
+            }
+        }
+    }
+
+    public void viewConstellations() {
+        System.out.println("My Constellations:");
+        for (String s: unlockedConstellations) {
+            System.out.println(s);
+        }
+    }
+
     public void showFeedback(int level) {
-        int randomValue = 1 + (int)(Math.random() * 10)/2;
+        int randomValue = 1 + (int) (Math.random() * 10) / 2;
         Math.min(randomValue, 5); // just to be safe
         ArrayList<String> feedbacks = quiz.getFeedback().get(level);
-        System.out.println(feedbacks.get(randomValue-1));
+        System.out.println(feedbacks.get(randomValue - 1));
     }
 
     public void checkAnswer(Question question) {
+        ArrayList<Character> responseList = new ArrayList<>(Arrays.asList('A', 'B', 'C', 'D'));
 
-
-        while(question.getNumAttempts() != 0) {
+        while (question.getNumAttempts() != 0) {
             Character answer = input.nextLine().charAt(0);
-
-            if (question.getCorrectAnswer().equals(Character.toUpperCase(answer))) {
+            if (!(responseList.contains(Character.toUpperCase(answer)))) {
+                System.out.println("Please enter a valid option: A, B, C or D");
+            } else if (question.getCorrectAnswer().equals(Character.toUpperCase(answer))) {
                 quiz.incrementScore(question.getNumAttempts());
                 System.out.println("You got it!!");
                 System.out.println("A star has been added to the night sky!!");
                 break;
-            }
-            else {
+            } else {
                 question.incrementCurrentAttempts();
                 question.decrementAttempts();
                 if (question.getNumAttempts() == 0) {
@@ -205,7 +373,29 @@ public class QuizConsole {
     public void seeQuiz() {
         float score = quiz.getFinalScore();
         System.out.println("Your final score is " + score);
-        System.out.println("You got approximately " + (score/15)*100 + "%");
+        System.out.println("You got approximately " + (score / 15) * 100 + "%");
+//        System.out.println("You collected " + starNum + " stars!");
+    }
+
+    public void loadConstellation() {
+        try {
+            unlockedConstellations = reader.read();
+            System.out.println("Loaded prior quiz" + " from " + DESTINATION);
+        } catch (IOException e) {
+            System.out.println("Unable to read from file: " + DESTINATION);
+        }
+    }
+
+    public void saveConstellation() {
+        try {
+            writer.fileOpen();
+            writer.writeTo(unlockedConstellations);
+            writer.closeWriter();
+            System.out.println("Your prior quiz has been saved in" + DESTINATION);
+
+        } catch (FileNotFoundException e) {
+            System.out.println("Unable to write to file: " + DESTINATION);
+        }
     }
 
 }
